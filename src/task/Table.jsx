@@ -1,5 +1,5 @@
 import { FaStar } from "react-icons/fa6";
-export default function Table({ tasks = {} }) {
+export default function Table({ tasks = {}, onEdit , onDelete}) {
   function myMap(tasks, cb) {
     let len = tasks.length;
     let newTask = [];
@@ -7,7 +7,6 @@ export default function Table({ tasks = {} }) {
       let temp = cb(tasks[i], i, tasks);
       newTask.push(temp);
     }
-    console.log(newTask);
     return newTask;
   }
 
@@ -39,26 +38,22 @@ export default function Table({ tasks = {} }) {
         </tr>
       </thead>
       <tbody>
-        {myMap(tasks, function (task) {
+        {myMap(tasks, function (task, index) {
           return (
             <tr
-              key={task.id}
+              key={index}
               className="border-b border-[#2E3443] [&>td]:align-baseline [&>td]:px-4 [&>td]:py-2"
             >
               <td>
                 {task.isFovarite ? (
-                
-                    <FaStar color="yellow" />
-                 
+                  <FaStar color="yellow" />
                 ) : (
-                
-                    <FaStar color="gray" />
-                  
+                  <FaStar color="gray" />
                 )}{" "}
               </td>
               <td>{task.title}</td>
               <td>
-                <div>{task.Description}</div>
+                <div>{task.description}</div>
               </td>
               <td>
                 <ul className="flex justify-center gap-1.5 flex-wrap">
@@ -76,8 +71,13 @@ export default function Table({ tasks = {} }) {
               <td className="text-center">{task.priority}</td>
               <td>
                 <div className="flex items-center justify-center space-x-3">
-                  <button className="text-red-500">Delete</button>
-                  <button className="text-blue-500">Edit</button>
+                  <button onClick={()=>onDelete(tasks.id)} className="text-red-500">Delete</button>
+                  <button
+                    onClick={() => onEdit(tasks)}
+                    className="text-blue-500"
+                  >
+                    Edit
+                  </button>
                 </div>
               </td>
             </tr>
