@@ -1,5 +1,5 @@
 import { FaStar } from "react-icons/fa6";
-export default function Table({ tasks = {}, onEdit , onDelete}) {
+export default function Table({ tasks = {}, onEdit, onDelete,onFav }) {
   function myMap(tasks, cb) {
     let len = tasks.length;
     let newTask = [];
@@ -45,11 +45,13 @@ export default function Table({ tasks = {}, onEdit , onDelete}) {
               className="border-b border-[#2E3443] [&>td]:align-baseline [&>td]:px-4 [&>td]:py-2"
             >
               <td>
-                {task.isFovarite ? (
-                  <FaStar color="yellow" />
-                ) : (
-                  <FaStar color="gray" />
-                )}{" "}
+                <button onClick={() => onFav(task.id)}>
+                  {task.isFovarite ? (
+                    <FaStar color="yellow" />
+                  ) : (
+                    <FaStar color="gray" />
+                  )}
+                </button>
               </td>
               <td>{task.title}</td>
               <td>
@@ -71,7 +73,12 @@ export default function Table({ tasks = {}, onEdit , onDelete}) {
               <td className="text-center">{task.priority}</td>
               <td>
                 <div className="flex items-center justify-center space-x-3">
-                  <button onClick={()=>onDelete(tasks.id)} className="text-red-500">Delete</button>
+                  <button
+                    onClick={() => onDelete(tasks.id)}
+                    className="text-red-500"
+                  >
+                    Delete
+                  </button>
                   <button
                     onClick={() => onEdit(tasks)}
                     className="text-blue-500"

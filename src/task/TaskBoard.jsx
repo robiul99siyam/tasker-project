@@ -19,21 +19,54 @@ export default function TaskBoard() {
   const [showModel, setShowModal] = useState(false);
   const [taskUpdate, setTaskUpdate] = useState(null);
 
-  function handleAddTask(newTask) {
-    setTasks((prevTasks) => [...prevTasks, newTask]);
+  function handleAddTask(newTask, isAdd) {
+    if (isAdd) {
+      setTasks((prevTasks) => [...prevTasks, newTask]);
+      console.log(tasks);
+    } else {
+      setTasks(
+        tasks.map((task) => {
+          if (task.id === newTask.id) {
+            console.log(newTask.id);
+            return newTask;
+          }
+          return task;
+        })
+      );
+      console.log(tasks);
+    }
     setShowModal(false);
   }
 
   function handleTaskEdit(task) {
-    setShowModal(task);
+    // console.log(task);
+    setTaskUpdate(task);
     setShowModal(true);
   }
 
+  function Myflter(tasks, cb) {
+    let len = tasks.length;
+    let newArray = [];
+    for (let i = 0; i < len; i++) {
+      if (cb(tasks[i], i, tasks)) {
+        newArray.push(tasks[i]);
+      }
+    }
+    return newArray;
+  }
   function handleDelete(taskId) {
-    const deleteF = tasks.filter((task) => {
+    // const deleteF = tasks.Myflter((task) => {
+    //   task.id !== taskId;
+    // });
+    const deleteF = Myflter(tasks, function (task) {
       task.id !== taskId;
     });
     setTasks(deleteF);
+  }
+
+  function handleCloseBtn() {
+    setShowModal(false);
+    setTaskUpdate(null);
   }
   function handleReverse() {
     let newArray = [...tasks];
@@ -51,16 +84,45 @@ export default function TaskBoard() {
     setTasks(newArray);
   }
 
+  function handleDeleteAllCilck() {
+    tasks.length = 0;
+    setTasks([...tasks]);
+  }
+
+  function handleTheFav(taskId) {
+    let tastIndex = tasks.findIndex((task) => task.id === taskId);
+    let newArray = [...tasks];
+    newArray[tastIndex].isFovarite = !newArray[tastIndex].isFovarite;
+    setTasks(newArray);
+  }
+
+  function handleTheSearch(searchTerm) {
+    console.log(searchTerm);
+    // const filterS = Myflter(tasks,function(task){
+    //   task.title.toLowerCase().includes(searchTerm.toLowerCase())
+    // })
+    const filterS = tasks.filter((task) =>
+      task.title.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setTasks([...filterS]);
+  }
+
   return (
     <section className="mb-20" id="tasks">
-      {showModel && <AddTaskModel onSave={handleAddTask} />}
+      {showModel && (
+        <AddTaskModel
+          onSave={handleAddTask}
+          taskUpdate={taskUpdate}
+          onCloseButton={handleCloseBtn}
+        />
+      )}
       <div className="container">
-        <Search />
+        <Search onSearch={handleTheSearch} />
         <div className="rounded-xl border border-[rgba(206,206,206,0.12)] bg-[#1D212B] px-6 py-8 md:px-9 md:py-16">
           <Button
             onAddClick={() => setShowModal(true)}
             onReverse={handleReverse}
-            taskUpdate={taskUpdate}
+            onhandleDeleteAll={handleDeleteAllCilck}
           />
           <div className="overflow-auto">
             {tasks.length > 0 ? (
@@ -68,6 +130,7 @@ export default function TaskBoard() {
                 tasks={tasks}
                 onEdit={handleTaskEdit}
                 onDelete={handleDelete}
+                onFav={handleTheFav}
               />
             ) : (
               <NoTasksFound />

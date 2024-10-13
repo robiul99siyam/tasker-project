@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export default function AddTaskModel({ onSave, taskUpdate }) {
+export default function AddTaskModel({ onSave, taskUpdate ,onCloseButton }) {
   const [task, setTask] = useState(
     taskUpdate || {
       id: crypto.randomUUID(),
@@ -11,7 +11,7 @@ export default function AddTaskModel({ onSave, taskUpdate }) {
       isFovarite: false,
     }
   );
-
+  // console.log(taskUpdate);
   const [isAdd, setIsAdd] = useState(Object.is(taskUpdate, null));
 
   function handleChange(e) {
@@ -27,19 +27,19 @@ export default function AddTaskModel({ onSave, taskUpdate }) {
     });
   }
 
-  function handleSubmit(e) {
-    e.preventDefault(); // Prevent the default form submission
-    onSave(task,isAdd);
-  }
+  // function handleSubmit(e) {
+  //   e.preventDefault(); // Prevent the default form submission
+  //   onSave(task,isAdd);
+  // }
 
   return (
     <>
       <form
-        onSubmit={handleSubmit}
+        // onSubmit={handleSubmit}
         className="mx-auto my-10 w-full max-w-[540px] max-h-[600px] rounded-xl border border-[#FEFBFB]/[36%] bg-[#191D26] p-9 max-md:px-4 lg:my-20 lg:p-11"
       >
         <h2 className="mb-9 text-center text-2xl font-bold text-white lg:mb-11 lg:text-[28px]">
-        {isAdd ? "Add New Task" : "Edit Task" }
+          {isAdd ? "Add New Task" : "Edit Task"}
         </h2>
 
         <div className="space-y-9 text-white lg:space-y-10">
@@ -51,6 +51,7 @@ export default function AddTaskModel({ onSave, taskUpdate }) {
               name="title"
               id="title"
               value={task.title}
+              // value="tile"
               onChange={handleChange}
               required
             />
@@ -101,12 +102,20 @@ export default function AddTaskModel({ onSave, taskUpdate }) {
           </div>
         </div>
 
-        <div className="mt-16 flex justify-center lg:mt-20">
+        <div className="mt-16 flex justify-between lg:mt-20">
           <button
+            onClick={onCloseButton}
+            type="submit"
+            className="rounded bg-red-600 px-4 py-2 text-white transition-all hover:opacity-80"
+          >
+            Close
+          </button>
+          <button
+            onClick={() => onSave(task, isAdd)}
             type="submit"
             className="rounded bg-blue-600 px-4 py-2 text-white transition-all hover:opacity-80"
           >
-            Create new Task
+            Save
           </button>
         </div>
       </form>
